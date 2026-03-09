@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Message for You</title>
+    <style>
+        :root {
+            --primary-color: #ff7675;
+            --text-color: #f5f6fa;
+            --bg-gradient: linear-gradient(135deg, #020111 0%, #090723 35%, #191439 100%);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-color);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Twinkling Stars Background */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            max-width: 450px;
+            width: 85%;
+            z-index: 10;
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        #output {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            min-height: 160px;
+            margin-bottom: 35px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* Interaction Buttons */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .btn-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        button {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.4s ease;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .btn-yes {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 10px 20px rgba(255, 118, 117, 0.2);
+        }
+
+        .btn-yes:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(255, 118, 117, 0.4);
+            background: #fb5a5a;
+        }
+
+        .btn-no {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+        }
+
+        .btn-no:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Special Effects */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2rem;
+            background-color: var(--primary-color);
+            margin-left: 4px;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        #final-message {
+            display: none;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .heart-beat {
+            display: inline-block;
+            animation: heartBeat 1.3s infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .heart-particle {
+            position: absolute;
+            bottom: -10%;
+            font-size: 24px;
+            pointer-events: none;
+            animation: floatUp linear forwards;
+            z-index: 5;
+        }
+
+        @keyframes floatUp {
+            to { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars-container" id="stars"></div>
+
+    <div class="glass-card" id="card">
+        <div id="output"></div>
+        
+        <div class="btn-container" id="interaction">
+            <button class="btn-yes" onclick="handleResponse('yes')">Yes</button>
+            <button class="btn-no" onclick="handleResponse('no')">No</button>
+        </div>
+
+        <div id="final-message">
+            <span class="heart-beat">I love you forever ❤️😘</span><br>
+            <small style="color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; display: block;">Ice Cream Khabi 😉</small>
+        </div>
+    </div>
+
+    <script>
+        // Generate Background Stars
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+            starsContainer.appendChild(star);
+        }
+
+        const textLines = [
+            "✧",
+            "I wanted to send you something quiet.",
+            "I'm sorry for the way I acted lately.",
+            "I value us more than being right.",
+            "And I value your peace more than my own.",
+            "Can we move past this together, Mum Mum?"
+        ];
+
+        const outputDiv = document.getElementById('output');
+        const interaction = document.getElementById('interaction');
+        const finalMessage = document.getElementById('final-message');
+
+        async function typeWriter() {
+            let currentHTML = "";
+            for (let i = 0; i < textLines.length; i++) {
+                let line = textLines[i];
+                if (i > 0) currentHTML += "<br>";
+                for (let char of line) {
+                    currentHTML += char;
+                    outputDiv.innerHTML = currentHTML + '<span class="cursor"></span>';
+                    await new Promise(r => setTimeout(r, 50)); 
+                }
+                await new Promise(r => setTimeout(r, 600)); 
+            }
+            interaction.classList.add('show');
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            heart.style.fontSize = (Math.random() * 15 + 15) + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+
+        function handleResponse(response) {
+            interaction.style.display = 'none';
+            outputDiv.style.display = 'none';
+            finalMessage.style.display = 'block';
+
+            if (response === 'yes') {
+                setInterval(createHeart, 150);
+            } else {
+                finalMessage.innerHTML = "<span class='heart-beat'>But still I love You ❤️</span><br><small style='color: rgba(255,255,255,0.5); font-size: 0.75rem;'>Always waiting for you...</small>";
+            }
+        }
+
+        setTimeout(typeWriter, 1200);
+    </script>
+</body>
+</html>
